@@ -1,28 +1,8 @@
 [
   {
-    "repo": "agentready",
-    "path": ".github/workflows/scan-on-issue.yml",
-    "local": "agentready/scan-on-issue.yml"
-  },
-  {
-    "repo": "interlock-forensics",
-    "path": ".github/workflows/claims.yml",
-    "local": "interlock-forensics/claims.yml"
-  },
-  {
-    "repo": "intent-spec",
-    "path": ".github/workflows/claims.yml",
-    "local": "intent-spec/claims.yml"
-  },
-  {
     "repo": "adversarial-seat",
     "path": ".github/workflows/claims.yml",
     "local": "adversarial-seat/claims.yml"
-  },
-  {
-    "repo": "decision-algebra",
-    "path": ".github/workflows/claims.yml",
-    "local": "decision-algebra/claims.yml"
   },
   {
     "repo": "aegis",
@@ -35,14 +15,9 @@
     "local": "aegis/commitlint.yml"
   },
   {
-    "repo": "exhibit",
-    "path": ".github/workflows/ci.yml",
-    "local": "exhibit/ci.yml"
-  },
-  {
-    "repo": "ep-aec-conformance",
-    "path": ".github/workflows/ci.yml",
-    "local": "ep-aec-conformance/ci.yml"
+    "repo": "agentready",
+    "path": ".github/workflows/scan-on-issue.yml",
+    "local": "agentready/scan-on-issue.yml"
   },
   {
     "repo": "beacon",
@@ -50,19 +25,49 @@
     "local": "beacon/agent.yml"
   },
   {
+    "repo": "decision-algebra",
+    "path": ".github/workflows/claims.yml",
+    "local": "decision-algebra/claims.yml"
+  },
+  {
+    "repo": "ep-aec-conformance",
+    "path": ".github/workflows/ci.yml",
+    "local": "ep-aec-conformance/ci.yml"
+  },
+  {
+    "repo": "exhibit",
+    "path": ".github/workflows/ci.yml",
+    "local": "exhibit/ci.yml"
+  },
+  {
     "repo": "hermes-refuse",
     "path": ".github/workflows/ci.yml",
     "local": "hermes-refuse/ci.yml"
   },
   {
-    "repo": "star-lab",
-    "path": ".github/workflows/commitlint.yml",
-    "local": "star-lab/commitlint.yml"
+    "repo": "intent-spec",
+    "path": ".github/workflows/claims.yml",
+    "local": "intent-spec/claims.yml"
   },
   {
-    "repo": "star-lab",
-    "path": ".github/workflows/lab-ci.yml",
-    "local": "star-lab/lab-ci.yml"
+    "repo": "interlock",
+    "path": ".github/workflows/automerge.yml",
+    "local": "interlock/automerge.yml"
+  },
+  {
+    "repo": "interlock",
+    "path": ".github/workflows/ci.yml",
+    "local": "interlock/ci.yml"
+  },
+  {
+    "repo": "interlock-forensics",
+    "path": ".github/workflows/claims.yml",
+    "local": "interlock-forensics/claims.yml"
+  },
+  {
+    "repo": "permit",
+    "path": ".github/workflows/ci.yml",
+    "local": "permit/ci.yml"
   },
   {
     "repo": "sovereign-contracts",
@@ -80,18 +85,18 @@
     "local": "sovereign-contracts/commitlint.yml"
   },
   {
-    "repo": "permit",
-    "path": ".github/workflows/ci.yml",
-    "local": "permit/ci.yml"
+    "repo": "star-lab",
+    "path": ".github/workflows/commitlint.yml",
+    "local": "star-lab/commitlint.yml"
   },
   {
-    "repo": "interlock",
-    "path": ".github/workflows/automerge.yml",
-    "local": "interlock/automerge.yml"
+    "repo": "star-lab",
+    "path": ".github/workflows/lab-ci.yml",
+    "local": "star-lab/lab-ci.yml"
   },
   {
-    "repo": "interlock",
-    "path": ".github/workflows/ci.yml",
-    "local": "interlock/ci.yml"
+    "repo": "the-register",
+    "path": ".github/workflows/controls.yml",
+    "local": "the-register/controls.yml"
   }
 ]

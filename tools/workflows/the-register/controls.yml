@@ -1,0 +1,48 @@
+name: controls
+on:
+  push:
+  pull_request:
+jobs:
+  controls:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: python3 -m pip install --quiet pyyaml
+      - name: Gate controls (10, both directions)
+        run: python3 tools/tests/test_validator.py
+      - name: Generate the deliberately-invalid fixtures
+        run: |
+          python3 tools/tests/make_fixtures.py
+          test -f tools/tests/fixtures/broken-heredoc.yml
+          test -f tools/tests/fixtures/theater.yml
+      - name: The gate must REFUSE both bad fixtures with exit 1 (not an error, not a pass)
+        run: |
+          failed=0
+          for f in tools/tests/fixtures/broken-heredoc.yml tools/tests/fixtures/theater.yml; do
+            set +e
+            python3 tools/validate_workflows.py "$f"
+            code=$?
+            set -e
+            if [ "$code" -ne 1 ]; then
+              echo "ERROR: $f -> expected exit 1 (refused), got exit $code"
+              failed=1
+            else
+              echo "ok: $f refused with exit 1"
+            fi
+          done
+          exit $failed
+      - name: The gate must ACCEPT this repository's own workflow with exit 0
+        run: |
+          set +e
+          python3 tools/validate_workflows.py .github/workflows/controls.yml
+          code=$?
+          set -e
+          if [ "$code" -ne 0 ]; then
+            echo "ERROR: the gate refused this repository's own CI (exit $code)"
+            exit 1
+          fi
+          echo "ok: this repository's own workflow is acceptable to its own gate"

@@ -170,10 +170,37 @@ a working gate from a gate that is absent.
 
 ---
 
+## I8 · The compiler claimed "checked this run" while reading a cache
+
+**What happened.** Publishing this repository added a twentieth public repo — which the register then
+had to describe, including its own. It reported **14 of 20** repositories as having at least one
+workflow. The true number was **15 of 20**: the new repository's own CI was not in the workflow cache,
+and the compiler only refreshed that cache when the index file was *missing*.
+
+So the header line — *"Every line below was produced by a named check during this run"* — was **false
+for the workflow column**. Not wrong by accident: wrong by a default.
+
+**Class.** A claim about freshness that the code did not enforce. Identical in shape to I1 and I7:
+the distinction between *"checked now"* and *"recalled from an earlier check"* was invisible from
+outside, and the artifact asserted the stronger of the two.
+
+**Method produced.** Refreshing is now the **default**; `--offline` is the explicit escape hatch, and
+it prints a warning and is meant to be labelled in the output. Retained `--refresh` for compatibility.
+
+**Control:** this one has no unit control yet, and that is stated rather than glossed. Closing it
+properly means asserting that a repository created between two runs appears in the second. Recorded
+here as an **open control** rather than counted as done.
+
+**The rule, and it is the third time this ledger has landed on it:**
+*a claim of freshness is a claim, and it needs the same evidence as any other.* "Checked this run"
+must be enforced by the code that makes the claim, or it is a sentence someone wrote once.
+
+---
+
 ## What the ledger is for
 
-Six incidents, seven methods, ten controls — and the same pattern **five times**: **the instrument was
-wrong, not the thing it measured.** Four of the five were caught by a control rather than by review,
+**Eight incidents, eight methods, ten controls** — and the same pattern **six times**: **the instrument
+was wrong, not the thing it measured.** Four of the six were caught by a control rather than by review,
 which is the argument for controls in one sentence.
 
 The rule this file exists to enforce:
@@ -182,3 +209,6 @@ The rule this file exists to enforce:
 
 `python3 tools/tests/test_validator.py` — ten controls, both directions, including the cases where
 this gate was wrong, and the case where a missing fixture would have passed silently.
+
+**One control is open and is labelled as open:** I8 has no unit control yet. It is listed rather than
+counted.

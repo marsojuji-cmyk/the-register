@@ -98,7 +98,10 @@ def sha256(p: Path) -> str:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--refresh", action="store_true")
+    ap.add_argument("--refresh", action="store_true",
+                    help="retained for compatibility; refreshing is now the DEFAULT")
+    ap.add_argument("--offline", action="store_true",
+                    help="use cached workflow files instead of re-fetching (stamps the output as cached)")
     ap.add_argument("--out", default=str(ROOT / "REGISTER.md"))
     args = ap.parse_args()
 
@@ -110,9 +113,19 @@ def main() -> int:
               file=sys.stderr)
         return 2
 
-    if args.refresh or not INDEX.exists():
+    # v1.2 — refresh is the DEFAULT. v1.1 reused a stale workflow cache whenever the
+    # index file already existed, so a repository created after the last fetch reported
+    # zero workflows while the header still claimed every line was checked this run.
+    # A register that silently reads a cache is exactly the defect it exists to catch.
+    workflow_source = "fetched live during this run"
+    if not args.offline:
         n = refresh_workflows(publics)
         print(f"fetched {n} workflow files across {len(publics)} repos")
+    else:
+        src_index = load_index()
+        workflow_source = (f"read from a CACHE of {len(src_index)} files — "
+                           f"may be stale; re-run without --offline to refresh")
+        print("WARNING: --offline — workflow counts come from a cache and may be stale")
     index = load_index()
 
     rows = []
@@ -160,8 +173,12 @@ def main() -> int:
     A(f"- **Account:** `{OWNER}`")
     A(f"- **Compiled:** {now}")
     A(f"- **Repos read:** {len(rows)} public")
-    A(f"- **Method:** `tools/validate_workflows.py` v1.1 · sha256 `{sha256(tool)[:16]}…`")
+    A(f"- **Method:** `tools/validate_workflows.py` · sha256 `{sha256(tool)[:16]}…`")
     A(f"- **Method's evidence:** `tools/tests/test_validator.py` · sha256 `{sha256(tests)[:16]}…`")
+    A(f"- **Workflow data:** {workflow_source}")
+    A("")
+    A("Identified by content hash rather than a version string: a hand-maintained version number is")
+    A("another claim that can drift from the artifact it describes.")
     A("")
     A("| repo | SECURITY.md | workflows | gate | tests/ | check cmd in README |")
     A("|---|---|---|---|---|---|")
