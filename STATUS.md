@@ -8,7 +8,7 @@ A hand-written status page is true on the day it is written and silently false a
 This one is compared against a fresh rendering on every run, so a change in the results
 fails the check until the file is regenerated and committed.
 
-Generated: 2026-10-04 08:44 MDT
+Generated: 2026-10-04 09:21 MDT
 
 ## This run
 
@@ -26,7 +26,10 @@ Generated: 2026-10-04 08:44 MDT
 | Z6 no secrets or absolute home paths in tracked files | PASS | clean |
 | Z7 repository description matches this source | PASS | in sync |
 
-11/11 checks passed.
+11/11 checks passed — **11 of the 12 checks this run
+performs.** The missing one is the render check itself (`Z4`): it produces this table and therefore
+cannot appear inside it. The console prints 12/12; the two numbers
+disagreeing here is arithmetic, not drift.
 
 ## What this does NOT claim
 

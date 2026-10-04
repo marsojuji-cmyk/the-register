@@ -235,7 +235,10 @@ Generated: {datetime.now().astimezone().strftime("%Y-%m-%d %H:%M %Z")}
 |---|---|---|
 {rows}
 
-{passed}/{len(results)} checks passed.
+{passed}/{len(results)} checks passed — **{len(results)} of the {len(results) + 1} checks this run
+performs.** The missing one is the render check itself (`Z4`): it produces this table and therefore
+cannot appear inside it. The console prints {len(results) + 1}/{len(results) + 1}; the two numbers
+disagreeing here is arithmetic, not drift.
 
 ## What this does NOT claim
 
