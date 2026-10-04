@@ -8,15 +8,15 @@ A hand-written status page is true on the day it is written and silently false a
 This one is compared against a fresh rendering on every run, so a change in the results
 fails the check until the file is regenerated and committed.
 
-Generated: 2026-10-04 08:35 MDT
+Generated: 2026-10-04 08:44 MDT
 
 ## This run
 
 | check | result | detail |
 |---|---|---|
-| Z1 gate controls (both directions) | PASS | 18/18 controls satisfied |
+| Z1 gate controls (both directions) | PASS | 19/19 controls satisfied |
 | Z2 adversarial probe hunt (0 findings) | PASS | 14/14 probes behave correctly; 0 finding(s) |
-| Z2b review findings match post-fix expectations | PASS | 23/23 cases already match the post-fix expectation; 0 to fix |
+| Z2b review findings match post-fix expectations | PASS | 30/30 cases already match the post-fix expectation; 0 to fix |
 | Z1b fixtures generate | PASS | 2 files |
 | Z1b bad fixtures REFUSED with exit 1 | PASS | both refused |
 | Z1b missing file ERRORS with exit 3 | PASS | exit 3 |

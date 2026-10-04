@@ -61,21 +61,38 @@ v1.4  Eighteen fixes from the Cursor-lane adversarial review. Every one is repro
         X15   FALSE POSITIVE: `continue-on-error: "false"` was refused; the expression
               `false` is falsy, so the step can fail.
 
+v1.5  Three closures from GitHub's own verdicts — asked directly, in a private probe repo
+      (commit cd4e15a, three files, three runs), read from the run objects rather than from a
+      summary of them:
+        X8  an UNKNOWN TOP-LEVEL KEY is not silently absorbed: **GitHub refuses the file**.
+            Run 37210112238 came back `failure` with 0 jobs and its run NAME fell back to the
+            file path — GitHub never read the `name:` key, so it died before parsing. The
+            leaked `foo: bar` was therefore never a "documented limit accepted on purpose";
+            it was a file GitHub rejects on every push, forever. Now refused by name.
+        X9  a malformed expression refuses the file too (run 37210112994 — same signature:
+            0 jobs, path-as-name). `${{ a = b }}` with a single `=` is now caught. Other
+            malformed expressions still pass; this is a partial close, stated as such.
+        X16 CLOSED, and it was never a false positive. Run 37210115515 RAN the file: its step
+            log shows `if: 'false'` SKIPPED and `if: "'false'"` EXECUTED. Refusing the first
+            and accepting the second is correct. The earlier "disputed, not changed" note in
+            HEAL.md was wrong on two counts: the code at 4fd3d33 DID strip quotes
+            (`value.strip().strip("'\"").lower() == "false"`), so it refused all four
+            spellings; the X2 rewrite fixed it as a side effect.
+      Also verified and recorded: `gh workflow list --all` reports BOTH unparseable files as
+      state `active`. So **`active` does not mean `runnable`** — any tool that counts
+      workflows by presence, including this project's own register, will count a file GitHub
+      refuses as a gate. That is a defect in the register, not in the gate.
+
 DELIBERATE TRADE-OFF, stated rather than implied: `continue-on-error` given as an
 EXPRESSION is treated as NOT neutralising. That can hide a genuinely neutralised step (a
 false negative) in exchange for never refusing a correct matrix-gated workflow (a false
-positive). Both cost the same here; the direction is chosen on purpose.
+positive). Both cost the same here; the direction is chosen on purpose, and it is pinned.
 
 KNOWN LIMITS, each pinned by a control:
-  * Check 6 exempts column-0 lines shaped like mapping keys, so a heredoc whose first
-    unindented line is `foo: bar` leaks out as a top-level key and the gate ACCEPTS.
-    Pinned by C19. (Review X8 INFERRED that GitHub rejects such a key outright, which
-    would mean the file is refused by GitHub rather than silently altered — unsettled.)
-  * Expression syntax inside `if:` is not validated (X9 INFERRED).
-  * Unknown top-level keys are not rejected (X8 INFERRED).
-  * Disputed, NOT changed: `if: 'false'` (YAML single-quoted) parses to the string `false`,
-    which GitHub evaluates as the expression `false` — falsy — so refusing it is correct.
-    Review X16 called this a false positive; the disagreement is recorded in HEAL.md.
+  * Expression syntax is checked only for the single-`=` operator. Every other malformed
+    expression still passes, and GitHub refuses the whole file for those too (X9, partly open).
+  * `continue-on-error` given as an expression is treated as not neutralising — the
+    deliberate false negative above. Pinned so a change in either direction is noticed.
 """
 from __future__ import annotations
 
@@ -85,7 +102,7 @@ from pathlib import Path
 
 import yaml
 
-__version__ = "1.4"
+__version__ = "1.5"
 
 # A column-0 line matching this is a top-level mapping key, not run-block content.
 _TOP_LEVEL_KEY = re.compile(r"^[A-Za-z_][\w.\-]*:")
@@ -96,6 +113,16 @@ _NEUTRAL_TAIL = re.compile(r"\|\|\s*(?:true|:|/bin/true|/usr/bin/true|exit\s+0)$
 
 # X2 -- GitHub evaluates the `if:` value as an expression; these evaluate falsy.
 _FALSY_STRINGS = {"false", "0", "-0", ""}
+
+# X8 -- the only top-level keys a workflow may carry. Anything else and GitHub refuses the
+# whole file (verified, run 37210112238: 0 jobs, run name fell back to the file path).
+KNOWN_TOP_LEVEL = {
+    "name", "run-name", "on", "permissions", "env", "defaults", "concurrency", "jobs",
+}
+
+# X9 -- a single '=' is an assignment; GitHub's expression language wants '=='. Matched only
+# outside quoted strings so `format('{0}={1}', a, b)` is not a false positive.
+_ASSIGN = re.compile(r"(?<![=!<>])=(?!=)")
 
 
 def _constant_false(value) -> bool:
@@ -117,6 +144,22 @@ def _constant_false(value) -> bool:
     if isinstance(value, str):
         return value.strip() in _FALSY_STRINGS
     return False
+
+
+def _bad_expression(value) -> str | None:
+    """X9 -- return a reason if an `if:` expression is malformed, else None.
+
+    Only the single-`=` operator is detected. That is one malformed expression out of many,
+    and it is the one with a verified verdict: run 37210112994 shows GitHub refusing the
+    entire file for it. Quoted strings are removed first, because `=` inside a literal is
+    legal and refusing it would be a false positive.
+    """
+    if not isinstance(value, str):
+        return None
+    bare = re.sub(r"'[^']*'|\"[^\"]*\"", "", value)
+    if _ASSIGN.search(bare):
+        return "contains a single '=' — GitHub's expression language requires '=='"
+    return None
 
 
 def _run_is_neutralised(run: str) -> bool:
@@ -231,6 +274,18 @@ def check_text(raw: str) -> list[str]:
             # X4: a trigger that can never fire means nothing in the workflow can fail.
             errs.append("'on:' has no triggers — a workflow that can never fire can never fail")
 
+    # --- X8: unknown top-level keys. Verified against GitHub, not inferred: it refuses the
+    # entire file (0 jobs, run name falls back to the path). This also closes the check-6
+    # heuristic's hole — a heredoc whose first unindented line is `foo: bar` leaks out as a
+    # top-level key, and that file is refused by GitHub rather than silently absorbed.
+    unknown = [k for k in _top_level_keys(raw) if k not in KNOWN_TOP_LEVEL]
+    if unknown:
+        errs.append(
+            f"unknown top-level key(s) {unknown} — GitHub refuses the ENTIRE file, "
+            f"not just the key (verified: a refused run reports 0 jobs and its name falls "
+            f"back to the file path)"
+        )
+
     if "jobs" not in {k if isinstance(k, str) else str(k) for k in doc}:
         errs.append("missing top-level 'jobs:'")
         return errs
@@ -280,6 +335,9 @@ def check_text(raw: str) -> list[str]:
                 )
             continue
 
+        bad = _bad_expression(job.get("if"))
+        if bad:
+            errs.append(f"job {jname}: `if:` {bad}")
         if _constant_false(job.get("if")):
             errs.append(
                 f"job {jname}: THEATER — job `if:` is constantly false, so it can never "
@@ -310,6 +368,9 @@ def check_text(raw: str) -> list[str]:
             run = step.get("run")
             if has_run and not (isinstance(run, str) and run.strip()):
                 errs.append(f"job {jname} step {i}: 'run' is present but empty")
+            bad = _bad_expression(step.get("if"))
+            if bad:
+                errs.append(f"job {jname} step {i}: `if:` {bad}")
             neutralised = (
                 _neutralises_errors(step.get("continue-on-error"))  # X14, X15
                 or _constant_false(step.get("if"))                  # X2

@@ -269,9 +269,27 @@ jobs:
 # module docstring — and this control pins it so a future change in either direction fails
 # loudly here instead of silently altering behaviour.
 #
-# Expecting ACCEPT is deliberate. A documented limit with no control is a comment; with a
-# control it is a tested fact. If someone later closes this hole, C19 fails and they update
-# both. If someone later widens it, C19 fails too.
+# Expecting ACCEPT was deliberate while this was a documented limit. It is now CLOSED:
+# GitHub was asked directly (private probe repo, run 37210112238) and REFUSED the file --
+# `failure`, 0 jobs, and the run name fell back to the file path because GitHub never parsed
+# the document. So this is a real control now, not a pin: a leaked key-shaped line is a file
+# GitHub rejects, and the gate must refuse it.
+#
+# The PIN convention itself is retained and re-pointed at the one limit that is still open on
+# purpose -- an expression-valued `continue-on-error`, which is accepted to avoid refusing
+# correct matrix-gated workflows. See EXPR_CONTINUE_ON_ERROR below.
+EXPR_CONTINUE_ON_ERROR = '''\
+name: p
+on: [push]
+jobs:
+  a:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test
+        run: make test
+        continue-on-error: ${{ matrix.experimental }}
+'''
+
 KNOWN_LIMIT_LEAKED_KEY = '''\
 name: p
 on: [push]
@@ -304,7 +322,7 @@ CONTROLS = [
     ("C16 empty jobs mapping", JOBS_EMPTY, "refuse"),
     ("C17 null jobs mapping", JOBS_NULL, "refuse"),
     ("C18 conditional job is NOT theater", CONDITIONAL_JOB_IS_NOT_THEATER, "accept"),
-    ("C19 KNOWN LIMIT: leaked key-shaped line accepted", KNOWN_LIMIT_LEAKED_KEY, "accept"),
+    ("C19 leaked key-shaped line is refused (GitHub refuses this file)", KNOWN_LIMIT_LEAKED_KEY, "refuse"),
 ]
 
 
@@ -392,7 +410,7 @@ def main() -> int:
         # A PIN is a documented limit, not a behaviour we want. If it stops holding, that
         # usually means the limit was CLOSED -- so it is reported without failing, rather
         # than the suite declaring a corrected gate untrustworthy (review X17).
-        if text is KNOWN_LIMIT_LEAKED_KEY:
+        if text is EXPR_CONTINUE_ON_ERROR:
             print(f"{'PIN ok ' if ok else 'PIN chg'}  {name:<44} "
                   f"{'unchanged' if ok else 'BEHAVIOUR CHANGED — update the pin and its rationale'}")
             continue

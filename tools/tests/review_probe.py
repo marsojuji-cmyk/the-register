@@ -76,6 +76,23 @@ CASES: list[tuple[str, str, str, str, str]] = [
     ("X15", "MED FP", "continue-on-error: \"false\" - evaluates falsy, so the step CAN fail",
      HEAD + "  a:\n    runs-on: ubuntu-latest\n    steps:\n      - name: Test\n        run: make test\n        continue-on-error: \"false\"\n", "accept"),
 
+    # ---- X8/X9/X16: settled by asking GITHUB, in a private probe repo (commit cd4e15a).
+    # Expectations below are GitHub's own verdicts, read from the run objects.
+    ("X8", "HIGH FN", "leaked key-shaped line -> GitHub REFUSES the file (run 37210112238)",
+     "name: p\non: [push]\njobs:\n  a:\n    runs-on: ubuntu-latest\n    steps:\n      - run: |\n          cat <<EOF\nfoo: bar\n          EOF\n", "refuse"),
+    ("X8b", "HIGH FN", "plain unknown top-level key",
+     "name: p\nfoo: bar\non: [push]\njobs:\n  a:\n    runs-on: ubuntu-latest\n    steps:\n      - run: make\n", "refuse"),
+    ("X9", "MED FN", "bad expression `${{ a = b }}` -> GitHub REFUSES (run 37210112994)",
+     HEAD + "  a:\n    if: ${{ github.actor = 'x' }}\n    runs-on: ubuntu-latest\n    steps:\n      - run: make\n", "refuse"),
+    ("X9b", "MED FN", "step-level bad expression",
+     HEAD + "  a:\n    runs-on: ubuntu-latest\n    steps:\n      - if: ${{ a = b }}\n        run: make\n", "refuse"),
+    ("X16", "LOW", "`if: 'false'` -> the job was SKIPPED (run 37210115515)",
+     HEAD + "  a:\n    if: 'false'\n    runs-on: ubuntu-latest\n    steps:\n      - run: make\n", "refuse"),
+    ("X16b", "LOW", "`if: \"'false'\"` -> the job RAN (run 37210115515)",
+     HEAD + "  a:\n    if: \"'false'\"\n    runs-on: ubuntu-latest\n    steps:\n      - run: make\n", "accept"),
+    ("G1", "guard", "`=` inside a string literal must NOT be refused",
+     HEAD + "  a:\n    if: ${{ format('{0}={1}', 'x', 'y') != '' }}\n    runs-on: ubuntu-latest\n    steps:\n      - run: make\n", "accept"),
+
     # ---- regression guards: things that must NOT change
     ("R1", "guard", "a normal real gate still accepted",
      HEAD + "  a:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - run: python3 -m pytest -q\n", "accept"),

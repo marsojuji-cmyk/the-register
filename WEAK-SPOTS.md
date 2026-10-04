@@ -209,6 +209,7 @@ the failure was known). Plug 3 is WS-3.**
 | WS-6 | no ongoing check | scheduled account-wide drift run | this lane | queued |
 | WS-8 | counterexamples unstorable | generators | — | plugged |
 | WS-9 | context into a training tier | your decision | **you** | flagged |
+| WS-11 | **`active` is not `runnable`** — a workflow GitHub refuses is still enumerated as `active`, so any column derived from file *presence* counts a refusal as a gate | derive the workflow column from the gate result, not from presence | this lane | **open** (E3-12) |
 
 **The one-line diagnosis:** every plug above is the same plug. *Make the difference between "it said
 no", "it broke", and "it never ran" impossible to miss — and make that guarantee live in one place
