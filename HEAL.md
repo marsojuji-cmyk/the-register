@@ -34,7 +34,8 @@ did, on the day it was written.** See §7.
 | **Z3** | every generated artifact matches a fresh **live** compile | E1 | **no substantive drift** |
 | **Z4** | no number in prose that no code enforces — counts generated, or asserted | E1 | **STATUS.md is generated** |
 | **Z5** | no blocking (E1/E2) item left open in this file | E1 | **all closed** |
-| — | this repository passes its own gate; no leaked secrets or home paths | E2/E1 | **clean** |
+| **Z6** | this repository passes its own gate; no secrets or absolute home paths in tracked files | E2/E1 | **clean** |
+| **Z7** | the published repository description matches its canonical source | E1 | **asserted** |
 
 **Z4 is the deepest fix and the generalisation of everything found today.** The recurring defect is
 prose asserting something no code checks: a cache read reported as "checked this run"; a control count

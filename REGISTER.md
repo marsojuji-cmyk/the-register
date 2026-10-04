@@ -5,10 +5,10 @@ A hand-written register is true on the day it is written and silently false afte
 this one cannot drift, because it prints nothing it has not just checked.
 
 - **Account:** `marsojuji-cmyk`
-- **Compiled:** 2026-10-04 08:14 MDT
+- **Compiled:** 2026-10-04 08:18 MDT
 - **Repos read:** 20 public
 - **Method:** `tools/validate_workflows.py` · sha256 `bd0e1ac85ca5ba4c…`
-- **Method's evidence:** `tools/tests/test_validator.py` · sha256 `a948679cd07c2baa…`
+- **Method's evidence:** `tools/tests/test_validator.py` · sha256 `df0351f1671fdd9e…`
 - **Workflow data:** fetched live during this run
 
 Identified by content hash rather than a version string: a hand-maintained version number is

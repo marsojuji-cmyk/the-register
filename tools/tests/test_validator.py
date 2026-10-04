@@ -263,6 +263,28 @@ jobs:
       - uses: peter-evans/enable-pull-request-automerge@v3
 '''
 
+# C19 — THE KNOWN LIMIT, PINNED. check 6 exempts column-0 lines shaped like mapping keys,
+# so a run block whose first unindented line is `foo: bar` leaks it out as a top-level key.
+# The document stays valid YAML and the gate ACCEPTS. That is the documented limit in the
+# module docstring — and this control pins it so a future change in either direction fails
+# loudly here instead of silently altering behaviour.
+#
+# Expecting ACCEPT is deliberate. A documented limit with no control is a comment; with a
+# control it is a tested fact. If someone later closes this hole, C19 fails and they update
+# both. If someone later widens it, C19 fails too.
+KNOWN_LIMIT_LEAKED_KEY = '''\
+name: p
+on: [push]
+jobs:
+  a:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo start
+          more
+foo: bar
+'''
+
 
 CONTROLS = [
     ("C1 broken heredoc pushed to production", BROKEN_HEREDOC, "refuse"),
@@ -282,6 +304,7 @@ CONTROLS = [
     ("C16 empty jobs mapping", JOBS_EMPTY, "refuse"),
     ("C17 null jobs mapping", JOBS_NULL, "refuse"),
     ("C18 conditional job is NOT theater", CONDITIONAL_JOB_IS_NOT_THEATER, "accept"),
+    ("C19 KNOWN LIMIT: leaked key-shaped line accepted", KNOWN_LIMIT_LEAKED_KEY, "accept"),
 ]
 
 

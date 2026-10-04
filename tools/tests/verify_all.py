@@ -176,6 +176,20 @@ def leaks() -> None:
     check("Z6 no secrets or absolute home paths in tracked files", not hits,
           ", ".join(hits[:4]) or "clean")
 
+    # Z7 — THE REPOSITORY DESCRIPTION IS A CLAIM SURFACE TOO. One was typed by hand on
+    # 2026-10-04 and went stale within minutes, which is WS-2: prose asserting what no code
+    # enforces. It is now asserted against this single source, and it deliberately contains
+    # no counts — a number in a published string is exactly the defect being plugged.
+    canonical = (
+        "A register that compiles itself: every claim is produced by a named check during "
+        "the run. Ships with a pre-push gate that refuses to publish a repository that is "
+        "not clean."
+    )
+    _, live = run(["gh", "api", "repos/marsojuji-cmyk/the-register", "--jq", ".description"])
+    live = live.strip()
+    check("Z7 repository description matches this source", live == canonical,
+          "in sync" if live == canonical else f"live: {live[:64]!r}")
+
 
 def main() -> int:
     for fn in (z1, z2, fixtures, self_audit, z3, z4, z5, leaks):
