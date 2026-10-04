@@ -1,0 +1,39 @@
+name: scan-on-issue
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  scan:
+    # only act on "scan my site" requests
+    if: contains(github.event.issue.title, 'Scan my site') || contains(github.event.issue.title, 'scan my site')
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Scan the site in the issue
+        id: scan
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+          FILE_OUT: comment.md
+        run: node action-scan.mjs
+
+      - name: Post the report as a comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO_SLUG: ${{ github.repository }}
+        run: gh issue comment "$ISSUE_NUMBER" --repo "$REPO_SLUG" --body-file comment.md

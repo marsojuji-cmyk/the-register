@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install
+        run: pip install -e ".[test]" && pip install ruff
+      - name: Lint
+        run: ruff check src tests && ruff format --check src tests
+      - name: Test
+        run: pytest -q
+      - name: Version consistency
+        run: |
+          pkg_ver=$(python -c "import interlock; print(interlock.__version__)")
+          file_ver=$(cat VERSION)
+          test "$pkg_ver" = "$file_ver" || { echo "VERSION ($file_ver) != package ($pkg_ver)"; exit 1; }

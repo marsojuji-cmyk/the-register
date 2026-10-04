@@ -1,0 +1,14 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Required files present
+        run: test -f README.md && test -f LICENSE
+      - name: Secret pattern scan
+        run: "! grep -rEI --exclude-dir=.git --exclude=ci.yml '(AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{36}|xox[bap]-|sk-live-|OPENAI_API_KEY=sk-)' . || (echo 'possible secret pattern found'; exit 1)"
