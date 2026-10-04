@@ -5,10 +5,10 @@ A hand-written register is true on the day it is written and silently false afte
 this one cannot drift, because it prints nothing it has not just checked.
 
 - **Account:** `marsojuji-cmyk`
-- **Compiled:** 2026-10-04 06:46 MDT
-- **Repos read:** 19 public
-- **Method:** `tools/validate_workflows.py` v1.1 · sha256 `c4fa1e57d2e3077d…`
-- **Method's evidence:** `tools/tests/test_validator.py` · sha256 `1efc2fac054b43cb…`
+- **Compiled:** 2026-10-04 06:51 MDT
+- **Repos read:** 20 public
+- **Method:** `tools/validate_workflows.py` v1.1 · sha256 `547b665443e50a0b…`
+- **Method's evidence:** `tools/tests/test_validator.py` · sha256 `bfba0876584b2dde…`
 
 | repo | SECURITY.md | workflows | gate | tests/ | check cmd in README |
 |---|---|---|---|---|---|
@@ -31,11 +31,12 @@ this one cannot drift, because it prints nothing it has not just checked.
 | `site` | ✅ | — | — | — | ❌ |
 | `sovereign-contracts` | ✅ | 3 | ✅ clean | — | ✅ |
 | `star-lab` | ✅ | 2 | ✅ clean | ✅ | ✅ |
+| `the-register` | ✅ | — | — | — | ✅ |
 
 ## Totals
 
-- `SECURITY.md` present: **18/19**
-- repos with at least one workflow: **14/19**
+- `SECURITY.md` present: **19/20**
+- repos with at least one workflow: **14/20**
 - workflows refused by the gate: **0**
 - READMEs that do not surface a check command: **6** — `exhibit`, `intent-spec`, `interlock`, `marcusrichards-dev`, `marsojuji-cmyk`, `site`
 
