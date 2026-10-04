@@ -157,10 +157,49 @@ that: choose the tier deliberately, and treat this chat's contents as publishabl
 
 ---
 
+## WS-10 · An acknowledgement is not an outcome  *(new, observed 2026-10-04)*
+
+**What happened.** The agent-messaging layer returned:
+
+```json
+{"status": "queued", "detail": "Durably queued for the live Bot Chat owner. Do NOT wait or resend."}
+```
+
+Minutes later the delivery process exited 1: `HTTP 402 personal-team-blocked:spending-limit`. **The
+receiving agent never saw the message.** The caller had been told "queued", told not to verify, and
+had already reported the handoff as dispatched to a human.
+
+**Why it belongs in this file.** It is WS-1 one level up — the same defect, in a *different layer of
+the stack*, found hours apart. A queue acknowledgement is a statement about **intent**. Delivery is a
+fact about **the world**. The interface reports the first in the grammar of the second, and the
+stronger claim is the one that gets believed.
+
+**The compounding error, which is worse than the plumbing.** Because the ack was confident, a human was
+told a review was in flight when no review existed. That is E1 — a false published claim — with the
+prose being *my own status report* rather than a README. The rule in `HEAL.md` §1 (Z4) applies to what
+this lane tells its operator, not only to what it commits.
+
+**Plug.**
+1. **`queued` means not delivered.** Never report a handoff as dispatched on the strength of an ack.
+   A delivery receipt, or the recipient's own reply, is the receipt. Anything else is intent.
+2. **An unavailable lane must be reported as unavailable**, with the named fix — not silently retried
+   and not counted as coverage. Here the fix is external and specific: Grok needs credits or a
+   subscription before that lane exists again.
+3. **When the independent reviewer is unavailable, substitute mechanical independence.** A reviewer
+   who shares this lane's assumptions is not independent; a *fuzzer* does not share assumptions at all.
+   It is a weaker form of independence than a second mind, but it is available today and it cannot be
+   talked out of a finding.
+
+**Status: recorded; plug 1 and 2 applied immediately (this lane's reporting changed in the same turn
+the failure was known). Plug 3 is WS-3.**
+
+---
+
 ## Summary — what gets plugged, by whom
 
 | id | class | plug | who | status |
 |---|---|---|---|---|
+| WS-10 | ack ≠ delivery | never report a handoff as dispatched without a receipt; name an unavailable lane | this lane | **plugged (reporting corrected)** |
 | WS-5 | CI weaker than the gate | CI runs `verify_all` | this lane | **PLUGGED** |
 | WS-7 | limit not pinned | control C19 pins the known limit | this lane | **PLUGGED** |
 | WS-2 | description is a claim surface | asserted from a canonical source (Z7) | this lane | **PLUGGED** |
