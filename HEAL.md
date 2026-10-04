@@ -117,18 +117,26 @@ The four `open` rows are all E3/E4 — they do not block, and Z5 confirms no **E
 
 ---
 
-## 7. Positive control — the guard has been observed firing
+## 7. Positive control — the guard has been observed firing, three times, independently
 
 A guard that has never fired is indistinguishable from a guard that is not there.
 
-| step | observation |
-|---|---|
-| first `verify_all` run, before the heals | **8/10 — exit 1 — "PUSH REFUSED"**, listing Z3 (stale register) and Z5 (E1-1, E1-2, E1-3 open) |
-| after the heals | **10/10 — exit 0 — "CLEAN — safe to publish"** |
+| # | run | observation |
+|---|---|---|
+| 1 | first `verify_all`, before the heals | **8/10 — exit 1 — "PUSH REFUSED"**, naming Z3 (stale register) and Z5 (E1-1, E1-2, E1-3 open) — both of which were in fact unfixed |
+| 2 | the heal commit `eaccbf9`, run as a background job | tamper → **"PUSH REFUSED", push exit 1**; restore → **10/10 CLEAN**, push allowed, `8d0b804..eaccbf9` |
+| 3 | re-run in-session after v1.3 | tamper → **9/10 → PUSH REFUSED**, push exit 1; restore → local == remote == `eaccbf9`, `0 0` ahead/behind, tree clean |
 
-So the gate was observed refusing a real defect **before** it was observed allowing a push, and the
-refusal named the two items that were in fact unfixed. That ordering is the proof; a gate that has
-only ever passed has not been tested.
+All three refused a **real** defect before allowing a push, and each refusal named something that was
+genuinely wrong. A gate that has only ever passed has not been tested.
+
+**On the counts printed in those logs.** Runs 1 and 2 show `18 controls` and `10 checks` because they
+ran before control C19 and check Z7 existed. They are correct **for their timestamp**, not stale — and
+a reader who finds a lower number in an old log has found history, not drift. Current counts are
+produced by `STATUS.md` and the runner, and are deliberately not stated here.
+
+That note exists because a number in a log looks exactly like a number in prose, and the rule in §1
+(Z4) applies to log transcripts as much as to READMEs.
 
 ---
 
