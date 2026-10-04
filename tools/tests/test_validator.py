@@ -389,6 +389,13 @@ def main() -> int:
     total = 0
     for name, text, want in CONTROLS:
         ok, line = _expect(name, text, want)
+        # A PIN is a documented limit, not a behaviour we want. If it stops holding, that
+        # usually means the limit was CLOSED -- so it is reported without failing, rather
+        # than the suite declaring a corrected gate untrustworthy (review X17).
+        if text is KNOWN_LIMIT_LEAKED_KEY:
+            print(f"{'PIN ok ' if ok else 'PIN chg'}  {name:<44} "
+                  f"{'unchanged' if ok else 'BEHAVIOUR CHANGED — update the pin and its rationale'}")
+            continue
         print(line)
         total += 1
         if not ok:

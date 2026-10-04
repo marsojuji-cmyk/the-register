@@ -5,10 +5,10 @@ A hand-written register is true on the day it is written and silently false afte
 this one cannot drift, because it prints nothing it has not just checked.
 
 - **Account:** `marsojuji-cmyk`
-- **Compiled:** 2026-10-04 08:18 MDT
+- **Compiled:** 2026-10-04 08:35 MDT
 - **Repos read:** 20 public
-- **Method:** `tools/validate_workflows.py` · sha256 `bd0e1ac85ca5ba4c…`
-- **Method's evidence:** `tools/tests/test_validator.py` · sha256 `df0351f1671fdd9e…`
+- **Method:** `tools/validate_workflows.py` · sha256 `96357c0d1a7cac69…`
+- **Method's evidence:** `tools/tests/test_validator.py` · sha256 `3729d9f9d84260f4…`
 - **Workflow data:** fetched live during this run
 
 Identified by content hash rather than a version string: a hand-maintained version number is
@@ -29,7 +29,7 @@ another claim that can drift from the artifact it describes.
 | `interlock-forensics` | ✅ | 1 | ✅ clean | — | ✅ |
 | `marcusrichards-dev` | ✅ | — | — | — | — |
 | `marsojuji-cmyk` | ✅ | — | — | — | — |
-| `permit` | ❌ | 1 | ✅ clean | ✅ | ✅ |
+| `permit` | ✅ | 1 | ✅ clean | ✅ | ✅ |
 | `quote-rescue` | ✅ | — | — | — | — |
 | `refinery` | ✅ | — | — | — | — |
 | `site` | ✅ | — | — | — | — |
@@ -39,7 +39,7 @@ another claim that can drift from the artifact it describes.
 
 ## Totals
 
-- `SECURITY.md` present: **19/20**
+- `SECURITY.md` present: **20/20**
 - repos with at least one workflow: **15/20**
 - workflows refused by the gate: **0**
 - READMEs that do not surface a check command: **0** — none

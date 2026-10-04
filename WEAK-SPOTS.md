@@ -205,7 +205,7 @@ the failure was known). Plug 3 is WS-3.**
 | WS-2 | description is a claim surface | asserted from a canonical source (Z7) | this lane | **PLUGGED** |
 | WS-1 | one-bit boundaries | lint for exact-exit-code assertions | this lane | queued |
 | WS-3 | blind spots | property-based fuzzer | this lane | queued |
-| WS-4 | self-verification | hand the verifier to the analysis lane to break | **handoff** | proposed |
+| WS-4 | self-verification | hand the verifier to the analysis lane to break | **handoff** | **DONE — reviewed** |
 | WS-6 | no ongoing check | scheduled account-wide drift run | this lane | queued |
 | WS-8 | counterexamples unstorable | generators | — | plugged |
 | WS-9 | context into a training tier | your decision | **you** | flagged |

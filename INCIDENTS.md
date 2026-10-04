@@ -197,6 +197,35 @@ must be enforced by the code that makes the claim, or it is a sentence someone w
 
 ---
 
+## I9 · A file that claimed to be generated, and was not
+
+**What happened.** `STATUS.md` was written by hand with **"GENERATED — do not edit. Produced by
+`tools/tests/verify_all.py`"** at the top of it. Nothing produced it. The only reference to the file
+in the whole toolchain was the checker that *read* it — `grep` for a writer returned zero hits.
+
+Four documents repeated the claim, and `HEAL.md` recorded an E1 as **closed** on the strength of it:
+the heal register was closing a defect using a false statement.
+
+The control meant to enforce it was one line — `"GENERATED" in body.upper()` — so any file containing
+that word passed, including one that said `| 999 controls pass |`.
+
+**Class.** Z4, the deepest rule in this project, is *"no number in prose that no code enforces."* The
+plug for that rule was itself an instance of it. A fix that shares the defect it fixes is the hardest
+kind to notice, because the fix is what you check when you are checking.
+
+**Why nothing caught it.** Every check was pointed at *other* artifacts. The one file that existed
+solely to report on the system was the only file no check wrote.
+
+**Method produced.** Z4 now **renders** the status from the run in progress and compares the committed
+file against that rendering, rewriting it only when the substance changed — the same technique as Z3.
+A status page that nothing generates is prose with a title.
+
+**Finding source:** Cursor lane, finding X10, severity HIGH, and it was the reviewer's first-ranked
+fix. Caught by grepping for a producer, not by reading the file — which is the generalisable move:
+**to check whether something is generated, look for its writer, not its claim.**
+
+---
+
 ## What the ledger is for
 
 **Every incident here produced a method and a control.** The pattern in **six of the eight** is the

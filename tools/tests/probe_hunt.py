@@ -1,9 +1,20 @@
 #!/usr/bin/env python3
 """Adversarial hunt: try to make the gate give a WRONG answer.
 
-The controls in test_validator.py prove the gate handles the cases we already thought
-of. This hunts for the cases we did not. Every probe states what a correct gate should
-do; anything where the gate disagrees is a finding.
+The controls in test_validator.py prove the gate handles the cases they cover. This hunts
+a different set: probes written separately from the controls, so a gap in one is not
+automatically a gap in the other.
+
+**What this does NOT claim — Cursor review X18.** Every probe below is a literal string
+written by the same lane that wrote the gate, with an expectation that lane chose. So this
+is a *second pass by the same mind*, not independence, and it cannot cover cases nobody
+imagined. Independence would require either a second reviewer (WEAK-SPOTS WS-4) or a
+generator that writes cases nobody chose (WS-3, the fuzzer). An earlier revision of this
+docstring said it hunted "the cases we did not think of", which was false and is why the
+wording is now this specific.
+
+Every probe states what a correct gate should do; anything where the gate disagrees is a
+finding.
 
 Run:  python3 tools/tests/probe_hunt.py
 Exit: 0 if the gate behaved correctly on every probe, 1 if any probe found a defect.
