@@ -22,6 +22,7 @@ Controls:
   C7  an all-`uses:` job where every step is neutralised       -> REFUSE (theater)
   C8  unquoted `on:` (the YAML 1.1 "Norway problem")           -> ACCEPT
   C9  a run block with column-0 content                        -> REFUSE (parse defect)
+  C10 a path that does not exist                               -> ERROR (exit 3, not 1)
 """
 from __future__ import annotations
 
@@ -243,17 +244,48 @@ def test_c9_column_zero_in_run() -> None:
     assert check_text(COLUMN_ZERO_IN_RUN)
 
 
+# System controls: these invoke the CLI, because the exit code is part of the contract.
+def _system_controls() -> list[tuple[str, bool, str]]:
+    """Return (name, passed, detail) for controls that test main(), not check_text()."""
+    import contextlib
+    import io
+
+    from validate_workflows import main
+
+    results: list[tuple[str, bool, str]] = []
+
+    # C10 — a missing file must ERROR (3), not REFUSE (1). A CI step that treats any
+    # non-zero exit as "refused as expected" passes when its own fixture is absent.
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
+        code = main(["validate_workflows.py", "/nonexistent/definitely-not-here.yml"])
+    results.append((
+        "C10 missing fixture errors (3), does not refuse (1)",
+        code == 3,
+        f"want=3 got={code}",
+    ))
+
+    return results
+
+
 def main() -> int:
     print(__doc__.strip().splitlines()[0])
     print("=" * 100)
     failed = 0
+    total = 0
     for name, text, want in CONTROLS:
         ok, line = _expect(name, text, want)
         print(line)
+        total += 1
+        if not ok:
+            failed += 1
+    for name, ok, detail in _system_controls():
+        print(f"{'PASS' if ok else 'FAIL'}  {name:<44} {detail}")
+        total += 1
         if not ok:
             failed += 1
     print("=" * 100)
-    print(f"{len(CONTROLS) - failed}/{len(CONTROLS)} controls satisfied")
+    print(f"{total - failed}/{total} controls satisfied")
     if failed:
         print("GATE IS NOT TRUSTWORTHY — do not use it to judge a workflow.")
     return 1 if failed else 0

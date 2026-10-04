@@ -1,0 +1,14 @@
+name: claims
+on: [push]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify markdown claims
+        run: |
+          python3 - <<'PY'
+import re, pathlib
+for p in pathlib.Path(".").rglob("*.md"):
+    print(p)
+PY

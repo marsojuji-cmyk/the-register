@@ -140,13 +140,32 @@ def check_file(path: Path) -> list[str]:
 
 
 def main(argv: list[str]) -> int:
+    """Exit codes are a contract, because CI asserts on them.
+
+        0  all targets valid
+        1  at least one target REFUSED  (a judgement about the content)
+        2  usage error
+        3  at least one target could not be read or parsed (an ERROR, not a judgement)
+
+    v1.2 — 2026-10-04: 1 and 3 were previously indistinguishable. An uncaught
+    FileNotFoundError exits 1, so a CI step asserting "non-zero means refused" would
+    pass when its own fixture was missing. That is the same defect as I1 one level up:
+    a refusal and a crash looked identical from outside. Errors now exit 3.
+    """
     targets = [Path(a) for a in argv[1:]]
     if not targets:
         print("usage: validate_workflows.py <file.yml> [...]", file=sys.stderr)
         return 2
     bad = 0
+    errored = 0
     for t in targets:
-        errs = check_file(t)
+        try:
+            errs = check_file(t)
+        except Exception as exc:
+            errored += 1
+            print(f"ERROR    {t}")
+            print(f"    - could not read or parse: {exc}")
+            continue
         if errs:
             bad += 1
             print(f"REFUSED  {t}")
@@ -154,7 +173,11 @@ def main(argv: list[str]) -> int:
                 print(f"    - {e}")
         else:
             print(f"OK       {t}")
-    print(f"\n{len(targets) - bad}/{len(targets)} workflows valid")
+    ok = len(targets) - bad - errored
+    tail = f" ({bad} refused, {errored} errored)" if errored else ""
+    print(f"\n{ok}/{len(targets)} workflows valid{tail}")
+    if errored:
+        return 3
     return 1 if bad else 0
 
 

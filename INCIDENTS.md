@@ -135,15 +135,50 @@ from a corrected instrument is worth more than five findings from a broken one.
 
 ---
 
+## I7 · The repository could not commit the evidence of the failure it exists to catch
+
+**What happened.** Adding the negative-control fixtures turned up two defects in a row, both found
+by trying to *commit a known-bad file*:
+
+1. `tools/tests/fixtures/broken-heredoc.yml` was **refused by the write path** that validates YAML —
+   because it is invalid YAML on purpose. The guard is correct and the artifact is correct, and the
+   two cannot both win. *A guard that prevents you from storing the evidence of the failure it
+   guards against.*
+2. Worse, and only visible after the first defect: the CI step checking that fixture used
+   `if validate_workflows.py <fixture>; then ... else echo "refused as expected"; fi`. A **missing**
+   fixture raises an uncaught `FileNotFoundError`, which exits **1** — the same code as a refusal.
+   So the step would have printed *"refused as expected"* and passed, with no fixture present at all.
+   A green check that verifies nothing. **The exact category this repository exists to detect.**
+
+**Class.** Two instances of one class: *an operation that failed and an operation that concluded are
+indistinguishable from outside.* It is I1 again — a broken pipeline and a failing test are both red —
+one level up, inside the instrument.
+
+**Method produced.**
+- Fixtures are **generated from code** (`tools/tests/make_fixtures.py`), where the intent is explicit
+  and the content is a literal. The guard is not weakened; the artifact gets a different provenance.
+- Exit codes are now a documented contract: **0** valid · **1** refused (a judgement) · **2** usage ·
+  **3** could not read or parse (an error, not a judgement). Errors exit 3, never 1.
+- CI asserts the **exact** exit code (`-ne 1` fails the build) instead of merely non-zero, and
+  asserts the fixture exists before running the gate against it.
+
+**Control:** `C10` — invoke the CLI with a path that does not exist and require exit 3.
+
+**The generalisable rule, and it is worth more than the fix:** *a negative control must be able to
+distinguish "it said no" from "it never ran".* A control that only checks for failure cannot tell
+a working gate from a gate that is absent.
+
+---
+
 ## What the ledger is for
 
-Six incidents, six methods, six controls — and the same pattern four times: **the instrument was
-wrong, not the thing it measured.** Three of the four were caught by a control rather than by review,
+Six incidents, seven methods, ten controls — and the same pattern **five times**: **the instrument was
+wrong, not the thing it measured.** Four of the five were caught by a control rather than by review,
 which is the argument for controls in one sentence.
 
 The rule this file exists to enforce:
 
 > **A method ships with its controls as a runnable file, or it does not ship.**
 
-`python3 tools/tests/test_validator.py` — nine controls, both directions, including the cases where
-this gate was wrong.
+`python3 tools/tests/test_validator.py` — ten controls, both directions, including the cases where
+this gate was wrong, and the case where a missing fixture would have passed silently.
