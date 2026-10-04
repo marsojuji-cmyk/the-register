@@ -147,6 +147,12 @@ def main() -> int:
                     f"repos/{OWNER}/{repo}/readme")
         cmd_doc = any(pat in readme for pat in README_PATTERNS) if readme else False
 
+        # v1.3 — the column is only APPLICABLE where a repo actually has something to check.
+        # A profile or documentation repo with no CI and no tests has no check command to
+        # document, so a ❌ there is a false negative. Counted as N/A instead.
+        has_checks = bool(wf_files) or ("tests" in names)
+        cmd_cell = None if not has_checks else cmd_doc
+
         rows.append({
             "repo": repo,
             "security": "SECURITY.md" in names,
@@ -156,6 +162,8 @@ def main() -> int:
             "gate_errors": gate_errors,
             "tests": "tests" in names,
             "cmd_doc": cmd_doc,
+            "cmd_cell": cmd_cell,
+            "has_checks": has_checks,
         })
 
     now = datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%d %H:%M %Z")
@@ -189,14 +197,18 @@ def main() -> int:
             r["n_workflows"] or "—",
             {"clean": "✅ clean", "n/a": "—", "REFUSED": "❌ REFUSED"}[r["gate"]],
             "✅" if r["tests"] else "—",
-            "✅" if r["cmd_doc"] else "❌",
+            "—" if r["cmd_cell"] is None else ("✅" if r["cmd_cell"] else "❌"),
         ))
     A("")
 
     sec_ok = sum(1 for r in rows if r["security"])
     wf_repos = [r for r in rows if r["n_workflows"]]
     refused = [r for r in rows if r["gate"] == "REFUSED"]
-    silent = [r for r in rows if not r["cmd_doc"]]
+    # Only count repos where a check command is MEANINGFUL: those with CI or tests.
+    # v1.3: profile and documentation repos were previously counted as failures here,
+    # which made the published number wrong by three.
+    applicable = [r for r in rows if r["has_checks"]]
+    silent = [r for r in applicable if r["cmd_cell"] is False]
     A("## Totals")
     A("")
     A(f"- `SECURITY.md` present: **{sec_ok}/{len(rows)}**")
@@ -258,7 +270,7 @@ def main() -> int:
                 r["n_workflows"] or "—",
                 cell(gate),
                 "✅" if r["tests"] else '<span class="dim">—</span>',
-                "✅" if r["cmd_doc"] else '<span class="bad">❌</span>',
+                "—" if r["cmd_cell"] is None else ("✅" if r["cmd_cell"] else '<span class="bad">❌</span>'),
             ))
 
     html = f"""<!DOCTYPE html>

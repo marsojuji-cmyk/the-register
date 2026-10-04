@@ -182,6 +182,88 @@ echo stray
 '''
 
 
+# C11–C16 — promoted from tools/tests/probe_hunt.py on 2026-10-04. Each one is a defect
+# the gate actually had: C11/C12 were false positives, C13–C16 false negatives.
+PERMISSIONS_AFTER_RUN = '''\
+name: p
+on: [push]
+jobs:
+  a:
+    runs-on: ubuntu-latest
+    steps:
+      - run: make
+permissions:
+  contents: read
+'''
+
+ENV_AFTER_RUN = '''\
+name: p
+on: [push]
+jobs:
+  a:
+    runs-on: ubuntu-latest
+    steps:
+      - run: make
+env:
+  FOO: bar
+'''
+
+EMPTY_RUN_VALUE = '''\
+name: p
+on: [push]
+jobs:
+  a:
+    runs-on: ubuntu-latest
+    steps:
+      - run: ""
+'''
+
+JOB_IF_FALSE = '''\
+name: p
+on: [push]
+jobs:
+  a:
+    if: false
+    runs-on: ubuntu-latest
+    steps:
+      - run: make
+'''
+
+STEP_IF_FALSE = '''\
+name: p
+on: [push]
+jobs:
+  a:
+    runs-on: ubuntu-latest
+    steps:
+      - if: false
+        run: make
+'''
+
+JOBS_EMPTY = '''\
+name: p
+on: [push]
+jobs:
+'''
+
+JOBS_NULL = '''\
+name: p
+on: [push]
+jobs: null
+'''
+
+CONDITIONAL_JOB_IS_NOT_THEATER = '''\
+name: p
+on: [push]
+jobs:
+  a:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: peter-evans/enable-pull-request-automerge@v3
+'''
+
+
 CONTROLS = [
     ("C1 broken heredoc pushed to production", BROKEN_HEREDOC, "refuse"),
     ("C2 normal GitHub-green ci", GOOD_CI, "accept"),
@@ -192,7 +274,16 @@ CONTROLS = [
     ("C7 all-uses job, neutralised", ALL_USES_NEUTRALISED, "refuse"),
     ("C8 unquoted on: (Norway problem)", NORWAY_PROBLEM, "accept"),
     ("C9 column-0 content in a run block", COLUMN_ZERO_IN_RUN, "refuse"),
+    ("C11 permissions: at column 0 after a run block", PERMISSIONS_AFTER_RUN, "accept"),
+    ("C12 env: at column 0 after a run block", ENV_AFTER_RUN, "accept"),
+    ("C13 step with an empty run value", EMPTY_RUN_VALUE, "refuse"),
+    ("C14 job that is constantly disabled", JOB_IF_FALSE, "refuse"),
+    ("C15 job whose every step is disabled", STEP_IF_FALSE, "refuse"),
+    ("C16 empty jobs mapping", JOBS_EMPTY, "refuse"),
+    ("C17 null jobs mapping", JOBS_NULL, "refuse"),
+    ("C18 conditional job is NOT theater", CONDITIONAL_JOB_IS_NOT_THEATER, "accept"),
 ]
+
 
 
 # --------------------------------------------------------------------------- #

@@ -5,10 +5,10 @@ A hand-written register is true on the day it is written and silently false afte
 this one cannot drift, because it prints nothing it has not just checked.
 
 - **Account:** `marsojuji-cmyk`
-- **Compiled:** 2026-10-04 06:53 MDT
+- **Compiled:** 2026-10-04 08:14 MDT
 - **Repos read:** 20 public
-- **Method:** `tools/validate_workflows.py` · sha256 `547b665443e50a0b…`
-- **Method's evidence:** `tools/tests/test_validator.py` · sha256 `bfba0876584b2dde…`
+- **Method:** `tools/validate_workflows.py` · sha256 `bd0e1ac85ca5ba4c…`
+- **Method's evidence:** `tools/tests/test_validator.py` · sha256 `a948679cd07c2baa…`
 - **Workflow data:** fetched live during this run
 
 Identified by content hash rather than a version string: a hand-maintained version number is
@@ -18,21 +18,21 @@ another claim that can drift from the artifact it describes.
 |---|---|---|---|---|---|
 | `adversarial-seat` | ✅ | 1 | ✅ clean | — | ✅ |
 | `aegis` | ✅ | 2 | ✅ clean | ✅ | ✅ |
-| `agentready` | ❌ | 1 | ✅ clean | — | ✅ |
+| `agentready` | ✅ | 1 | ✅ clean | — | ✅ |
 | `beacon` | ✅ | 1 | ✅ clean | — | ✅ |
 | `decision-algebra` | ✅ | 1 | ✅ clean | — | ✅ |
 | `ep-aec-conformance` | ✅ | 1 | ✅ clean | ✅ | ✅ |
-| `exhibit` | ✅ | 1 | ✅ clean | ✅ | ❌ |
+| `exhibit` | ✅ | 1 | ✅ clean | ✅ | ✅ |
 | `hermes-refuse` | ✅ | 1 | ✅ clean | — | ✅ |
-| `intent-spec` | ✅ | 1 | ✅ clean | — | ❌ |
-| `interlock` | ✅ | 2 | ✅ clean | ✅ | ❌ |
+| `intent-spec` | ✅ | 1 | ✅ clean | — | ✅ |
+| `interlock` | ✅ | 2 | ✅ clean | ✅ | ✅ |
 | `interlock-forensics` | ✅ | 1 | ✅ clean | — | ✅ |
-| `marcusrichards-dev` | ✅ | — | — | — | ❌ |
-| `marsojuji-cmyk` | ✅ | — | — | — | ❌ |
-| `permit` | ✅ | 1 | ✅ clean | ✅ | ✅ |
-| `quote-rescue` | ✅ | — | — | — | ✅ |
-| `refinery` | ✅ | — | — | — | ✅ |
-| `site` | ✅ | — | — | — | ❌ |
+| `marcusrichards-dev` | ✅ | — | — | — | — |
+| `marsojuji-cmyk` | ✅ | — | — | — | — |
+| `permit` | ❌ | 1 | ✅ clean | ✅ | ✅ |
+| `quote-rescue` | ✅ | — | — | — | — |
+| `refinery` | ✅ | — | — | — | — |
+| `site` | ✅ | — | — | — | — |
 | `sovereign-contracts` | ✅ | 3 | ✅ clean | — | ✅ |
 | `star-lab` | ✅ | 2 | ✅ clean | ✅ | ✅ |
 | `the-register` | ✅ | 1 | ✅ clean | — | ✅ |
@@ -42,7 +42,7 @@ another claim that can drift from the artifact it describes.
 - `SECURITY.md` present: **19/20**
 - repos with at least one workflow: **15/20**
 - workflows refused by the gate: **0**
-- READMEs that do not surface a check command: **6** — `exhibit`, `intent-spec`, `interlock`, `marcusrichards-dev`, `marsojuji-cmyk`, `site`
+- READMEs that do not surface a check command: **0** — none
 
 ## What each column establishes
 

@@ -1,0 +1,32 @@
+#!/bin/sh
+# Pre-push gate. Nothing reaches GitHub unless this repository is in its best condition.
+#
+# Installed with:  git config core.hooksPath .githooks
+# Proven armed:    HEAL.md records a positive control — a deliberately re-introduced
+#                  defect was pushed at and the hook refused it. A guard that has never
+#                  fired is indistinguishable from a guard that is not there.
+#
+# Bypass for genuine emergencies only:  git push --no-verify
+#   A bypass is a decision, not an accident. If used, record it in HEAL.md.
+
+set -e
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+if [ ! -f tools/tests/verify_all.py ]; then
+    echo "pre-push: tools/tests/verify_all.py not found — refusing rather than passing."
+    echo "          A missing gate is not a passing gate."
+    exit 1
+fi
+
+printf 'pre-push: verify_all ... '
+if python3 tools/tests/verify_all.py; then
+    echo "pre-push: CLEAN — push allowed."
+    exit 0
+fi
+
+echo ""
+echo "PUSH REFUSED — verify_all reported failures above."
+echo "Fix them, or add the gap to HEAL.md with a severity, an owner and a status."
+exit 1

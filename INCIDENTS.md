@@ -199,16 +199,23 @@ must be enforced by the code that makes the claim, or it is a sentence someone w
 
 ## What the ledger is for
 
-**Eight incidents, eight methods, ten controls** — and the same pattern **six times**: **the instrument
-was wrong, not the thing it measured.** Four of the six were caught by a control rather than by review,
-which is the argument for controls in one sentence.
+**Every incident here produced a method and a control.** The pattern in **six of the eight** is the
+same: **the instrument was wrong, not the thing it measured.** Four of those six were caught by a
+control rather than by review, which is the argument for controls in one sentence.
 
 The rule this file exists to enforce:
 
 > **A method ships with its controls as a runnable file, or it does not ship.**
 
-`python3 tools/tests/test_validator.py` — ten controls, both directions, including the cases where
-this gate was wrong, and the case where a missing fixture would have passed silently.
+**No counts appear in this file on purpose.** A number typed into prose is a claim no code enforces —
+and this file previously stated how many controls existed, which was wrong within the day (recorded as
+E1-1 in `HEAL.md`). The live counts are produced by `tools/tests/verify_all.py`, and published in
+`STATUS.md`, which is generated rather than written.
 
-**One control is open and is labelled as open:** I8 has no unit control yet. It is listed rather than
-counted.
+Run them yourself:
+
+```bash
+python3 tools/tests/test_validator.py   # every control, both directions
+python3 tools/tests/probe_hunt.py       # the adversarial hunt for cases we did NOT think of
+python3 tools/tests/verify_all.py       # all of it; exit 0 only when clean
+```
