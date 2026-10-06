@@ -1,6 +1,6 @@
 # THE REGISTER
 
-A self-verifying record of what is actually true about this account's public artifacts.
+**No named check, no line.** A self-verifying record of what is actually true about this account's public artifacts.
 
 **The idea:** a register written by hand is true on the day it is written and silently false
 afterwards. This one is **compiled**. Every line it prints was produced by a named check during
