@@ -5,7 +5,7 @@ A hand-written register is true on the day it is written and silently false afte
 this one cannot drift, because it prints nothing it has not just checked.
 
 - **Account:** `marsojuji-cmyk`
-- **Compiled:** 2026-10-07 14:42 MDT
+- **Compiled:** 2026-10-07 15:42 MDT
 - **Repos read:** 19 public
 - **Method:** `tools/validate_workflows.py` · sha256 `9ec811231609512e…`
 - **Method's evidence:** `tools/tests/test_validator.py` · sha256 `7ffab996e59f5f34…`
@@ -24,7 +24,7 @@ another claim that can drift from the artifact it describes.
 | `exhibit` | ✅ | 1 | ✅ clean | ✅ | ✅ |
 | `governor` | ❌ | 1 | ✅ clean | ✅ | ✅ |
 | `hermes-refuse` | ✅ | 1 | ✅ clean | — | ✅ |
-| `honestyield.dev` | ❌ | 1 | ✅ clean | — | ❌ |
+| `honestyield.dev` | ❌ | 1 | ✅ clean | — | ✅ |
 | `intent-spec` | ✅ | 1 | ✅ clean | — | ✅ |
 | `interlock` | ✅ | 2 | ✅ clean | ✅ | ✅ |
 | `interlock-forensics` | ✅ | 1 | ✅ clean | — | ✅ |
@@ -41,7 +41,7 @@ another claim that can drift from the artifact it describes.
 - `SECURITY.md` present: **15/19**
 - repos with at least one workflow: **17/19**
 - workflows refused by the gate: **0**
-- READMEs that do not surface a check command: **1** — `honestyield.dev`
+- READMEs that do not surface a check command: **0** — none
 
 ## What each column establishes
 
