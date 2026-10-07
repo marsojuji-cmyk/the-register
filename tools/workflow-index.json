@@ -5,29 +5,19 @@
     "local": "adversarial-seat/claims.yml"
   },
   {
-    "repo": "aegis",
-    "path": ".github/workflows/ci.yml",
-    "local": "aegis/ci.yml"
-  },
-  {
-    "repo": "aegis",
-    "path": ".github/workflows/commitlint.yml",
-    "local": "aegis/commitlint.yml"
-  },
-  {
     "repo": "agentready",
     "path": ".github/workflows/scan-on-issue.yml",
     "local": "agentready/scan-on-issue.yml"
   },
   {
+    "repo": "atomic-admission",
+    "path": ".github/workflows/ci.yml",
+    "local": "atomic-admission/ci.yml"
+  },
+  {
     "repo": "beacon",
     "path": ".github/workflows/agent.yml",
     "local": "beacon/agent.yml"
-  },
-  {
-    "repo": "decision-algebra",
-    "path": ".github/workflows/claims.yml",
-    "local": "decision-algebra/claims.yml"
   },
   {
     "repo": "ep-aec-conformance",
@@ -40,9 +30,19 @@
     "local": "exhibit/ci.yml"
   },
   {
+    "repo": "governor",
+    "path": ".github/workflows/ci.yml",
+    "local": "governor/ci.yml"
+  },
+  {
     "repo": "hermes-refuse",
     "path": ".github/workflows/ci.yml",
     "local": "hermes-refuse/ci.yml"
+  },
+  {
+    "repo": "honestyield.dev",
+    "path": ".github/workflows/ci.yml",
+    "local": "honestyield.dev/ci.yml"
   },
   {
     "repo": "intent-spec",
@@ -68,6 +68,21 @@
     "repo": "permit",
     "path": ".github/workflows/ci.yml",
     "local": "permit/ci.yml"
+  },
+  {
+    "repo": "reclamation-evidence-ledger",
+    "path": ".github/workflows/ci.yml",
+    "local": "reclamation-evidence-ledger/ci.yml"
+  },
+  {
+    "repo": "reclamation-evidence-ledger",
+    "path": ".github/workflows/commitlint.yml",
+    "local": "reclamation-evidence-ledger/commitlint.yml"
+  },
+  {
+    "repo": "reclamation-evidence-ledger",
+    "path": ".github/workflows/validate.yml",
+    "local": "reclamation-evidence-ledger/validate.yml"
   },
   {
     "repo": "sovereign-contracts",
