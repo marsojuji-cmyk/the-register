@@ -51,11 +51,6 @@
   },
   {
     "repo": "interlock",
-    "path": ".github/workflows/automerge.yml",
-    "local": "interlock/automerge.yml"
-  },
-  {
-    "repo": "interlock",
     "path": ".github/workflows/ci.yml",
     "local": "interlock/ci.yml"
   },
@@ -83,11 +78,6 @@
     "repo": "reclamation-evidence-ledger",
     "path": ".github/workflows/validate.yml",
     "local": "reclamation-evidence-ledger/validate.yml"
-  },
-  {
-    "repo": "sovereign-contracts",
-    "path": ".github/workflows/automerge.yml",
-    "local": "sovereign-contracts/automerge.yml"
   },
   {
     "repo": "sovereign-contracts",
