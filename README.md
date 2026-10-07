@@ -1,33 +1,56 @@
 # THE REGISTER
 
-**No named check, no line.** A self-verifying record of what is actually true about this account's public artifacts.
+**Compiles this account's public-repo register from named checks, and refuses to publish when any check fails.**
 
-**The idea:** a register written by hand is true on the day it is written and silently false
+[![controls](https://github.com/marsojuji-cmyk/the-register/actions/workflows/controls.yml/badge.svg)](https://github.com/marsojuji-cmyk/the-register/actions/workflows/controls.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Python 3.11](https://img.shields.io/badge/python-3.11-3776AB.svg)](.github/workflows/controls.yml)
+
+**No named check, no line.** **The idea:** a register written by hand is true on the day it is written and silently false
 afterwards. This one is **compiled**. Every line it prints was produced by a named check during
 the same run, so it cannot drift — and when it is wrong, it is wrong reproducibly, in a way
 someone else can re-run and argue with.
 
----
+## What it guarantees
 
-## Reproduce it
+- **Every line comes from a check.** `tools/compile_register.py` produces each row of `REGISTER.md` from a named check in the same run. Each column names its method.
+- **The gate verifies its own method.** `tools/tests/test_validator.py` runs 19 controls in both directions: known-bad workflows must be refused and known-good ones accepted.
+- **Publishing is gated.** `tools/tests/verify_all.py` runs checks Z1–Z7 and exits non-zero if any fails. Z1–Z2 cover controls and the probe hunt. Z3 checks `REGISTER.md` against a fresh live compile, and Z4 does the same for `STATUS.md`. Z5 checks that every heal item is closed. Z6 rejects secrets or absolute home paths. Z7 checks that the published repo description matches its source. CI runs the same gate on every push.
+
+## Quickstart
 
 ```bash
-git clone <this repo> && cd <this repo>
-python3 tools/tests/test_validator.py     # 9/9 controls — the method's own evidence
+git clone https://github.com/marsojuji-cmyk/the-register && cd the-register
+python3 -m pip install pyyaml                 # the only dependency, plus an authenticated gh CLI
+python3 tools/tests/test_validator.py         # 19/19 controls: the method's own evidence
 python3 tools/compile_register.py --refresh   # compiles REGISTER.md from live state
+python3 tools/tests/verify_all.py             # the full publish gate
 ```
 
-No dependencies beyond `pyyaml` and an authenticated `gh` CLI. No pytest required — the controls
-run as a plain script and exit non-zero on failure.
+No pytest required: the controls run as a plain script and exit non-zero on failure.
 
-Read `REGISTER.md` for the compiled output. Read `INCIDENTS.md` for why it can be trusted.
+## How it fails
 
----
+| Condition | Behaviour |
+|---|---|
+| A control does not match its expected verdict | `test_validator.py` exits non-zero, and `verify_all.py` fails Z1 |
+| `REGISTER.md` or `STATUS.md` drifts from a fresh compile | Z3 or Z4 fails, and the gate refuses to publish |
+| A tracked file contains a secret or an absolute home path | Z6 fails |
+| The live repo description differs from the canonical string | Z7 fails |
+| `gh` is unauthenticated or a fetch fails | `gh()` returns empty output and the compiler records the item as absent, so a failed fetch under-reports and never over-reports. Z3 then flags the drift against the committed `REGISTER.md` |
+
+## Evidence
+
+- `python3 tools/tests/test_validator.py`, run locally 2026-10-07: **19/19 controls satisfied**.
+- `python3 tools/tests/verify_all.py`, run locally 2026-10-07: **12/12 checks passed**, "CLEAN — safe to publish".
+- CI `controls` is green on `main`.
+- `REGISTER.md` (compiled 2026-10-07): 19 public repos, `SECURITY.md` on 15/19, a workflow on 17/19, 0 workflows refused by the gate.
+- `INCIDENTS.md` records nine incidents (I1–I9), each with the control it produced.
 
 ## Why this exists
 
-The account has nineteen public repositories. Eighteen of them carry a `SECURITY.md`, most of them
-have CI, some have real test suites, and two have been referenced by parties outside it.
+The account has 19 public repositories. `REGISTER.md` records which of them carry a `SECURITY.md`,
+which have CI, and which have test suites. Two have been referenced by parties outside the account.
 
 None of that was in one place, and none of it was checkable by a stranger. Worse, it was
 **checked once, by hand, in a session** — which meant the claims were true on the day and unverified
@@ -45,33 +68,28 @@ Every error ran the same way: manual reads missed things that were there. That i
 a compiled register over a careful reader — not that the compiler is smarter, but that it is
 **reproducible**, and a reproducible claim can be disputed.
 
----
-
 ## The one rule
 
 > **A method ships with its controls as a runnable file, or it does not ship.**
 
-The gate in `tools/` is not trusted because it works. It is trusted because its nine controls are
+The gate in `tools/` is not trusted because it works. It is trusted because its controls are
 committed, cover both directions, and include cases where the gate itself was wrong.
-
----
 
 ## Layout
 
 ```
 REGISTER.md                    compiled — every line checked this run
-INCIDENTS.md                   the defect ledger: six failures, six methods, six controls
+INCIDENTS.md                   the defect ledger: nine incidents (I1–I9), each with its method fix and control
 CANON.md                       the category and the six refusals
 CODES.md                       the grammar
-tools/validate_workflows.py    the method (v1.1) — refuses a workflow GitHub will reject or that cannot fail
-tools/validate_workflows.v1.0.orig.py   the previous version, kept for provenance
-tools/tests/test_validator.py  the method's evidence — 9 controls, both directions
+tools/validate_workflows.py    the method — refuses a workflow GitHub will reject or that cannot fail
+tools/validate_workflows.v1.*.orig.py   earlier versions, kept for provenance
+tools/tests/test_validator.py  the method's evidence — 19 controls, both directions
+tools/tests/verify_all.py      the publish gate — Z1–Z7, exits non-zero on any failure
 tools/compile_register.py      the compiler
 tools/workflow-index.json      what was fetched, and from where
 tools/workflows/<repo>/        every workflow file, as fetched
 ```
-
----
 
 ## What this does not claim
 
@@ -85,9 +103,11 @@ Green CI here means a pipeline **can** fail — not that it is testing anything 
 through an artifact.** Two such instances are known. That number is the one worth watching, and it
 is deliberately *not* in the table, because it cannot be compiled from an API.
 
----
+## Status
 
-## Licence
+Active. CI recompiles and re-verifies the register on every push, and the Z7 canonical tracks the repo description.
+
+## License
 
 **MIT** (see `LICENSE`), chosen 2026-10-04 and reversible.
 
