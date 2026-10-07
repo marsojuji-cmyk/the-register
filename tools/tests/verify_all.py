@@ -200,9 +200,8 @@ def z6_z7() -> None:
     # Z7 -- the published description is a claim surface too, typed by hand once and stale
     # within minutes. Asserted against this source, which deliberately contains no counts.
     canonical = (
-        "A register that compiles itself: every claim is produced by a named check during "
-        "the run. Ships with a pre-push gate that refuses to publish a repository that is "
-        "not clean."
+        "Compiles this account's public-repo register from named checks. "
+        "A pre-push gate refuses unclean repos."
     )
     _, live = run(["gh", "api", "repos/marsojuji-cmyk/the-register", "--jq", ".description"])
     live = live.strip()
