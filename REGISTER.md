@@ -5,7 +5,7 @@ A hand-written register is true on the day it is written and silently false afte
 this one cannot drift, because it prints nothing it has not just checked.
 
 - **Account:** `marsojuji-cmyk`
-- **Compiled:** 2026-10-07 23:24 MDT
+- **Compiled:** 2026-10-07 23:43 MDT
 - **Repos read:** 18 public
 - **Method:** `tools/validate_workflows.py` · sha256 `9ec811231609512e…`
 - **Method's evidence:** `tools/tests/test_validator.py` · sha256 `7ffab996e59f5f34…`
@@ -21,23 +21,23 @@ another claim that can drift from the artifact it describes.
 | `beacon` | ✅ | 1 | ✅ clean | — | ✅ |
 | `ep-aec-conformance` | ✅ | 1 | ✅ clean | ✅ | ✅ |
 | `exhibit` | ✅ | 1 | ✅ clean | ✅ | ✅ |
-| `governor` | ❌ | 1 | ✅ clean | ✅ | ✅ |
+| `governor` | ✅ | 1 | ✅ clean | ✅ | ✅ |
 | `hermes-refuse` | ✅ | 1 | ✅ clean | — | ✅ |
-| `honestyield.dev` | ❌ | 1 | ✅ clean | — | ✅ |
+| `honestyield.dev` | ✅ | 1 | ✅ clean | — | ✅ |
 | `intent-spec` | ✅ | 1 | ✅ clean | — | ✅ |
 | `interlock` | ✅ | 1 | ✅ clean | ✅ | ✅ |
 | `interlock-forensics` | ✅ | 1 | ✅ clean | — | ✅ |
 | `marsojuji-cmyk` | ✅ | — | — | — | — |
 | `permit` | ✅ | 1 | ✅ clean | ✅ | ✅ |
 | `quote-rescue` | ✅ | — | — | — | — |
-| `reclamation-evidence-ledger` | ❌ | 3 | ✅ clean | ✅ | ✅ |
+| `reclamation-evidence-ledger` | ✅ | 3 | ✅ clean | ✅ | ✅ |
 | `sovereign-contracts` | ✅ | 2 | ✅ clean | — | ✅ |
 | `star-lab` | ✅ | 2 | ✅ clean | ✅ | ✅ |
 | `the-register` | ✅ | 1 | ✅ clean | — | ✅ |
 
 ## Totals
 
-- `SECURITY.md` present: **15/18**
+- `SECURITY.md` present: **18/18**
 - repos with at least one workflow: **16/18**
 - workflows refused by the gate: **0**
 - READMEs that do not surface a check command: **0** — none
