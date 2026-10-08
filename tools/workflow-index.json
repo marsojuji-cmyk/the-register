@@ -10,11 +10,6 @@
     "local": "agentready/scan-on-issue.yml"
   },
   {
-    "repo": "atomic-admission",
-    "path": ".github/workflows/ci.yml",
-    "local": "atomic-admission/ci.yml"
-  },
-  {
     "repo": "beacon",
     "path": ".github/workflows/agent.yml",
     "local": "beacon/agent.yml"

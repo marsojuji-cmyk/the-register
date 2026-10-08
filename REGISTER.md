@@ -5,8 +5,8 @@ A hand-written register is true on the day it is written and silently false afte
 this one cannot drift, because it prints nothing it has not just checked.
 
 - **Account:** `marsojuji-cmyk`
-- **Compiled:** 2026-10-07 16:12 MDT
-- **Repos read:** 19 public
+- **Compiled:** 2026-10-07 23:24 MDT
+- **Repos read:** 18 public
 - **Method:** `tools/validate_workflows.py` · sha256 `9ec811231609512e…`
 - **Method's evidence:** `tools/tests/test_validator.py` · sha256 `7ffab996e59f5f34…`
 - **Workflow data:** fetched live during this run
@@ -18,7 +18,6 @@ another claim that can drift from the artifact it describes.
 |---|---|---|---|---|---|
 | `adversarial-seat` | ✅ | 1 | ✅ clean | — | ✅ |
 | `agentready` | ✅ | 1 | ✅ clean | — | ✅ |
-| `atomic-admission` | ❌ | 1 | ✅ clean | — | ✅ |
 | `beacon` | ✅ | 1 | ✅ clean | — | ✅ |
 | `ep-aec-conformance` | ✅ | 1 | ✅ clean | ✅ | ✅ |
 | `exhibit` | ✅ | 1 | ✅ clean | ✅ | ✅ |
@@ -38,8 +37,8 @@ another claim that can drift from the artifact it describes.
 
 ## Totals
 
-- `SECURITY.md` present: **15/19**
-- repos with at least one workflow: **17/19**
+- `SECURITY.md` present: **15/18**
+- repos with at least one workflow: **16/18**
 - workflows refused by the gate: **0**
 - READMEs that do not surface a check command: **0** — none
 
